@@ -8,9 +8,9 @@ import {
 } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { MarkdownService } from 'ngx-markdown';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { ApiKeyService } from 'src/app/services/api-key.service';
 import { ChatCompletionRequestMessage } from 'openai';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-chat-content',

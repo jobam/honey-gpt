@@ -3,12 +3,12 @@ import { ChatDataService } from '../services/chat-data.service';
 import { v4 as uuidv4 } from 'uuid';
 import { ChatService } from '../services/chat.service';
 import { Router } from '@angular/router';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { UserDialogComponent } from '../user-dialog/user-dialog.component';
 import { ApiKeyService } from '../services/api-key.service';
 import { ChatHistoryDetails } from '../shared/models/chat-history-details.model';
 import ChatHistories from '../shared/models/chat-histories.model';
 import { ChatCompletionRequestMessage } from 'openai';
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
