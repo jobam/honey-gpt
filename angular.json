@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "open-ai-web": {
+    "honey-gpt": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/open-ai-web",
+            "outputPath": "dist/honey-gpt",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "open-ai-web:build:production"
+              "browserTarget": "honey-gpt:build:production"
             },
             "development": {
-              "browserTarget": "open-ai-web:build:development"
+              "browserTarget": "honey-gpt:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "open-ai-web:build"
+            "browserTarget": "honey-gpt:build"
           }
         },
         "test": {
@@ -94,7 +94,7 @@
           "options": {
             "prerender": false,
             "ssr": false,
-            "browserTarget": "open-ai-web:build:production",
+            "browserTarget": "honey-gpt:build:production",
             "firebaseProject": "chatgpt-clone-yny",
             "firebaseHostingSite": "chatgpt-clone-yny"
           }
