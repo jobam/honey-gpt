@@ -1,0 +1,9 @@
+services:
+  scoring:
+    container_name: honey-gpt
+    image: honey-gpt:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "4800:80"
