@@ -20,6 +20,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatInputModule} from "@angular/material/input";
+import { AppUploadFileComponent } from './app-upload-file/app-upload-file.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import {MatInputModule} from "@angular/material/input";
     SidebarComponent,
     ChatContentComponent,
     UserDialogComponent,
+    AppUploadFileComponent,
   ],
   imports: [
     EffectsModule.forRoot([]),

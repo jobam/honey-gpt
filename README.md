@@ -12,10 +12,10 @@ Happy chating 🤟🏻
 
 ```bash
 ## Clone the repository to your local
-git clone https://github.com/yagizhanNY/openai-chatgpt3-clone.git
+git clone https://github.com/jobam/honey-gpt
 
 ## Navigate to project's directory
-cd openai-chatgpt3-clone
+cd honey-gpt
 
 ## Install the packages
 npm install
