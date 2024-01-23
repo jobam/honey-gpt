@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -8,7 +8,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppUploadFileComponent {
   selectedFile: File | null = null;
+  isBusy = false;
   @Input() disabled = false;
+  @Output() uploaded:EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private http: HttpClient) { }
 
@@ -27,16 +29,19 @@ export class AppUploadFileComponent {
     const formData = new FormData();
     formData.append('file', this.selectedFile, this.selectedFile.name);
     formData.append('autoDelete', 'true');
+    this.isBusy = true;
 
     // Using the file.io API to upload the file
     this.http.post('https://file.io', formData).subscribe(
       (response: any) => {
         console.log(response);
-        alert('File uploaded successfully!\n' + response.link);
+        this.uploaded.emit(response.link);
+        this.isBusy = false;
       },
       (error) => {
         console.error(error);
         alert('Failed to upload the file.');
+        this.isBusy = false;
       }
     );
   }

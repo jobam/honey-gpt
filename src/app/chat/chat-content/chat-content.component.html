@@ -23,7 +23,7 @@
             alt="user_photo"
           />
           <div class="align-middle">
-            <div class="prose prose-invert" [innerHTML]="message.content"></div>
+            <div class="prose prose-invert" [innerHTML]="castMessageContent(message.content)[0].text"></div>
           </div>
         </div>
       </div>
@@ -46,6 +46,7 @@
       rows="1"
       name="textInput"
       #textInput
+      [(ngModel)]="promptValue"
       (keyup.enter)="createCompletion(textInput)"
       [disabled]="apiKey === null || apiKey === ''"
     ></textarea>
@@ -67,6 +68,6 @@
         <span class="sr-only">Loading...</span>
       </div>
     </button>
-   <app-app-upload-file [disabled]="apiKey === null || apiKey === '' || isBusy"></app-app-upload-file>
+   <app-app-upload-file (uploaded)="fileUploaded($event)" [disabled]="apiKey === null || apiKey === '' || isBusy"></app-app-upload-file>
   </div>
 </div>

@@ -6,11 +6,14 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
-import { ChatService } from '../../services/chat.service';
-import { MarkdownService } from 'ngx-markdown';
-import { ApiKeyService } from 'src/app/services/api-key.service';
-import { ChatCompletionRequestMessage } from 'openai';
+import {ChatService} from '../../services/chat.service';
+import {MarkdownService} from 'ngx-markdown';
+import {ApiKeyService} from 'src/app/services/api-key.service';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Chat} from "openai/resources";
+import ChatCompletionMessageParam = Chat.ChatCompletionMessageParam;
+import {ChatCompletionContentPart} from "openai/src/resources/chat/completions";
+
 
 @Component({
   selector: 'app-chat-content',
@@ -18,21 +21,23 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   styleUrls: ['./chat-content.component.css'],
 })
 export class ChatContentComponent
-  implements OnInit, AfterViewChecked, AfterViewInit
-{
+  implements OnInit, AfterViewChecked, AfterViewInit {
   constructor(
     private chatService: ChatService,
     private markdownService: MarkdownService,
     private apiKeyService: ApiKeyService,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+  }
 
   @ViewChild('window') window!: any;
-  public messages: ChatCompletionRequestMessage[] = [];
+  public messages: ChatCompletionMessageParam[] = [];
   apiKey: string | null = '';
   isBusy: boolean = false;
   currChatSelected: string = '';
-  @ViewChild('textInput', { static: true }) textInputRef!: ElementRef;
+  @ViewChild('textInput', {static: true}) textInputRef!: ElementRef;
+  promptValue: string = '';
+  imageUrl: string = '';
 
   ngOnInit(): void {
     this.scrollToBottom();
@@ -56,53 +61,83 @@ export class ChatContentComponent
     this.scrollToBottom();
   }
 
-  async createCompletion(element: HTMLTextAreaElement) {
+  createCompletion(element: HTMLTextAreaElement) {
     const prompt = element.value;
     if (prompt.length <= 1 || this.isBusy) {
       element.value = '';
       return;
     }
     element.value = '';
-    const message: ChatCompletionRequestMessage = {
+    const message: ChatCompletionMessageParam = {
       role: 'user',
-      content: prompt,
-    };
-
-    this.messages.push(message);
-    try {
-      this.isBusy = true;
-      const completion = await this.chatService.createCompletionViaOpenAI(
-        this.messages
-      );
-      console.log(completion);
-      const completionMessage = this.markdownService.parse(
-        completion.data.choices[0].message?.content!
-      );
-
-      const responseMessage: ChatCompletionRequestMessage = {
-        role: 'assistant',
-        content: completionMessage,
-      };
-
-      this.messages.push(responseMessage);
-    } catch (err) {
-      this.snackBar.open(
-        'API Request Failed, please check after some time or verify the OpenAI key.',
-        'Close',
+      content: [
         {
-          horizontalPosition: 'end',
-          verticalPosition: 'bottom',
-          duration: 5000,
+          "type": "text",
+          "text": prompt
         }
-      );
+      ]
+    };
+    if (this.imageUrl !== '') {
+      (message.content as Array<ChatCompletionContentPart>).push({
+        "type": "image_url",
+        "image_url": {
+          "url": this.imageUrl
+        }
+      });
     }
+    this.messages.push(message);
+    console.log(message);
+      this.isBusy = true;
+      this.chatService.createCompletionViaOpenAI(
+        this.messages, this.imageUrl != null
+      ).then(completion => {
+        const completionMessage = this.markdownService.parse(
+          completion.choices[0].message?.content!
+        );
+        const responseMessage: any = {
+          role: 'assistant',
+          content:  [
+            {
+              type: 'text',
+              text: completionMessage
+            }
+          ]
+        };
 
-    this.chatService.setMessagesSubject(this.messages);
-    this.isBusy = false;
-    this.scrollToBottom();
-  }
+        this.messages.push(responseMessage);
+        this.imageUrl = '';
+        this.chatService.setMessagesSubject(this.messages);
+        this.isBusy = false;
+        this.scrollToBottom();
+      },
+        err =>{
+          console.error(err);
+          this.imageUrl = '';
+          this.snackBar.open(
+            'API Request Failed, please check after some time or verify the OpenAI key.',
+            'Close',
+            {
+              horizontalPosition: 'end',
+              verticalPosition: 'bottom',
+              duration: 5000,
+            }
+          );
+          this.isBusy = false;
+          this.scrollToBottom();
+        });
+
+    }
 
   scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight);
+  }
+
+  fileUploaded(url: string) {
+    this.imageUrl = url;
+    // this.promptValue = `${this.promptValue}\n ${url}`;
+  }
+
+  castMessageContent(src: any): ChatCompletionContentPart {
+    return src as ChatCompletionContentPart;
   }
 }

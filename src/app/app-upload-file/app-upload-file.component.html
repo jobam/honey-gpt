@@ -1,4 +1,5 @@
 <button
+  *ngIf="!isBusy"
   [disabled]="disabled"
   class="bg-[#40414E] p-3 rounded-r-md"
   type="button"
@@ -24,3 +25,8 @@
     class="fa-solid fa-paperclip text-white"
   ></i>
 </button>
+<div
+  *ngIf="isBusy === true"
+  class="inline-block h-5 w-5 text-white animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+  role="status"
+>

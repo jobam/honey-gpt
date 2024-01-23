@@ -1,16 +1,20 @@
-import { Injectable } from '@angular/core';
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { ChatDataService } from './chat-data.service';
+import {Injectable} from '@angular/core';
+import OpenAI from 'openai';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {ChatDataService} from './chat-data.service';
+import {Chat} from "openai/resources";
+import ChatCompletionMessageParam = Chat.ChatCompletionMessageParam;
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  openai!: OpenAIApi;
+  openai!: OpenAI;
+  standardModel: string = 'gpt-4-1106-preview'
+  visionModel: string = 'gpt-4-vision-preview'
 
-  messages: ChatCompletionRequestMessage[] = [];
-  private messagesSubject = new BehaviorSubject<ChatCompletionRequestMessage[]>(
+  messages: ChatCompletionMessageParam[] = [];
+  private messagesSubject = new BehaviorSubject<ChatCompletionMessageParam[]>(
     []
   );
 
@@ -19,32 +23,28 @@ export class ChatService {
   }
 
   public updateConfiguration(): void {
-    const configuration = new Configuration({
+    this.openai = new OpenAI({
       apiKey: this.chatDataService.getAPIKeyFromLocalStore() ?? '',
+      dangerouslyAllowBrowser: true
     });
-
-    this.openai = new OpenAIApi(configuration);
   }
 
-  async createCompletionViaOpenAI(messages: ChatCompletionRequestMessage[]) {
-    return await this.openai.createChatCompletion(
-      {
-        model: 'gpt-4-1106-preview',
+  createCompletionViaOpenAI(messages: ChatCompletionMessageParam[], isFileAttached = true) {
+    return this.openai.chat.completions.create({
         messages: messages,
+        model: isFileAttached ? this.visionModel : this.standardModel,
       },
       {
         headers: {
-          'Content-Type': 'application/json',
-          'X-User-Agent': 'OpenAPI-Generator/1.0/Javascript',
-        },
-      }
-    );
+          'Content-Type': 'application/json'
+        }
+      });
   }
 
-  async getTitleFromChatGpt(messages: ChatCompletionRequestMessage[]) {
-    return await this.openai.createChatCompletion(
+  async getTitleFromChatGpt(messages: ChatCompletionMessageParam[]) {
+    return this.openai.chat.completions.create(
       {
-        model: 'gpt-3.5-turbo',
+        model: this.standardModel,
         messages: [
           {
             role: 'user',
@@ -56,18 +56,17 @@ export class ChatService {
       },
       {
         headers: {
-          'Content-Type': 'application/json',
-          'X-User-Agent': 'OpenAPI-Generator/1.0/Javascript',
+          'Content-Type': 'application/json'
         },
       }
     );
   }
 
-  public setMessagesSubject(event: ChatCompletionRequestMessage[]) {
+  public setMessagesSubject(event: ChatCompletionMessageParam[]) {
     this.messagesSubject.next(event);
   }
 
-  public getMessagesSubject(): Observable<ChatCompletionRequestMessage[]> {
+  public getMessagesSubject(): Observable<ChatCompletionMessageParam[]> {
     return this.messagesSubject.asObservable();
   }
 }
