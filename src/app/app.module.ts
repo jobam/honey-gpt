@@ -21,6 +21,8 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatInputModule} from "@angular/material/input";
 import { AppUploadFileComponent } from './app-upload-file/app-upload-file.component';
+import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { AppUploadFileComponent } from './app-upload-file/app-upload-file.compon
     AppUploadFileComponent,
   ],
   imports: [
+    CommonModule,
+    HttpClientModule,
     EffectsModule.forRoot([]),
     BrowserModule,
     FormsModule,
@@ -47,7 +51,7 @@ import { AppUploadFileComponent } from './app-upload-file/app-upload-file.compon
     ReactiveFormsModule,
     MarkdownModule.forRoot(),
   ],
-  providers: [],
+  providers: [HttpClient],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -1,4 +1,26 @@
-<div class="file-upload-container">
-  <input type="file" (change)="onFileSelected($event)" />
-  <button [disabled]="!selectedFile" (click)="uploadFile()">Upload</button>
-</div>
+<button
+  [disabled]="disabled"
+  class="bg-[#40414E] p-3 rounded-r-md"
+  type="button"
+>
+  <!--
+    The input is styled as a visually hidden element. When the button is clicked,
+    it triggers the click on the input, prompting the file selection dialog to open.
+  -->
+  <input
+    #fileInput
+    type="file"
+    (change)="onFileSelected($event)"
+    style="display: none;"
+  />
+  <!--
+    Here, clicking on the icon will trigger a click on the hidden file input.
+    `uploadFile()` should not be called here directly; it will be called
+    after file selection within `onFileSelected`.
+  -->
+  <i
+    *ngIf="!disabled"
+    (click)="fileInput.click()"
+    class="fa-solid fa-paperclip text-white"
+  ></i>
+</button>
