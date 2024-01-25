@@ -86,10 +86,9 @@ export class ChatContentComponent
       });
     }
     this.messages.push(message);
-    console.log(message);
       this.isBusy = true;
       this.chatService.createCompletionViaOpenAI(
-        this.messages, this.imageUrl != null
+        this.messages, this.imageUrl !== ''
       ).then(completion => {
         const completionMessage = this.markdownService.parse(
           completion.choices[0].message?.content!
