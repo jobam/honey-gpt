@@ -9,7 +9,9 @@ import { ChatHistoryDetails } from '../shared/models/chat-history-details.model'
 import ChatHistories from '../shared/models/chat-histories.model';
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import OpenAI from "openai";
-import ChatCompletionMessageParam = OpenAI.ChatCompletionMessageParam;
+import {Chat} from "openai/resources";
+import ChatCompletionMessageParam = Chat.ChatCompletionMessageParam;
+import {ChatCompletionContentPart, ChatCompletionContentPartText} from "openai/src/resources/chat/completions";
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -42,8 +44,9 @@ export class SidebarComponent implements OnInit {
   async addNewChat() {
     if (this.isHistoricalChat === false) {
       const chatHistoryId = uuidv4();
-      const title = (await this.chatService.getTitleFromChatGpt(this.messages))
-        .choices[0].message?.content!;
+      const title = ((this.messages[0].content) as Array<ChatCompletionContentPartText>)[0].text?.slice(0, 30) + '...';
+      console.log(title);
+      console.log(this.messages);
 
       const chatHistory: ChatHistoryDetails = {
         id: chatHistoryId,
