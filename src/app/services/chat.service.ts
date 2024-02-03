@@ -25,7 +25,7 @@ export class ChatService {
   public updateConfiguration(): void {
     this.openai = new OpenAI({
       apiKey: this.chatDataService.getAPIKeyFromLocalStore() ?? '',
-      dangerouslyAllowBrowser: true
+      dangerouslyAllowBrowser: true,
     });
   }
 
@@ -33,6 +33,7 @@ export class ChatService {
     return this.openai.chat.completions.create({
         messages: messages,
         model: isFileAttached ? this.visionModel : this.standardModel,
+        max_tokens: isFileAttached ? 4096 : 128000
       },
       {
         headers: {
