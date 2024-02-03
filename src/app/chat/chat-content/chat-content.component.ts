@@ -12,7 +12,7 @@ import {ApiKeyService} from 'src/app/services/api-key.service';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Chat} from "openai/resources";
 import ChatCompletionMessageParam = Chat.ChatCompletionMessageParam;
-import {ChatCompletionContentPart} from "openai/src/resources/chat/completions";
+import {ChatCompletionContentPart, ChatCompletionContentPartImage} from "openai/src/resources/chat/completions";
 
 
 @Component({
@@ -86,16 +86,16 @@ export class ChatContentComponent
       });
     }
     this.messages.push(message);
-      this.isBusy = true;
-      this.chatService.createCompletionViaOpenAI(
-        this.messages, this.imageUrl !== ''
-      ).then(completion => {
+    this.isBusy = true;
+    this.chatService.createCompletionViaOpenAI(
+      this.messages, this.imageUrl !== ''
+    ).then(completion => {
         const completionMessage = this.markdownService.parse(
           completion.choices[0].message?.content!
         );
         const responseMessage: any = {
           role: 'assistant',
-          content:  [
+          content: [
             {
               type: 'text',
               text: completionMessage
@@ -109,23 +109,23 @@ export class ChatContentComponent
         this.isBusy = false;
         this.scrollToBottom();
       },
-        err =>{
-          console.error(err);
-          this.imageUrl = '';
-          this.snackBar.open(
-            'API Request Failed, please check after some time or verify the OpenAI key.',
-            'Close',
-            {
-              horizontalPosition: 'end',
-              verticalPosition: 'bottom',
-              duration: 5000,
-            }
-          );
-          this.isBusy = false;
-          this.scrollToBottom();
-        });
+      err => {
+        console.error(err);
+        this.imageUrl = '';
+        this.snackBar.open(
+          'API Request Failed, please check after some time or verify the OpenAI key.',
+          'Close',
+          {
+            horizontalPosition: 'end',
+            verticalPosition: 'bottom',
+            duration: 5000,
+          }
+        );
+        this.isBusy = false;
+        this.scrollToBottom();
+      });
 
-    }
+  }
 
   scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight);
@@ -138,5 +138,9 @@ export class ChatContentComponent
 
   castMessageContent(src: any): ChatCompletionContentPart {
     return src as ChatCompletionContentPart;
+  }
+
+  castToImageContent(src: any): ChatCompletionContentPartImage {
+    return src as ChatCompletionContentPartImage;
   }
 }

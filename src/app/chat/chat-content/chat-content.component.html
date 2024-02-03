@@ -24,6 +24,9 @@
           />
           <div class="align-middle">
             <div class="prose prose-invert" [innerHTML]="castMessageContent(message.content)[0].text"></div>
+            <div class="prose prose-invert" *ngIf="castToImageContent(message.content)[1]?.image_url">
+              <img [src]="castToImageContent(message.content)[1].image_url.url" alt=""/>
+            </div>
           </div>
         </div>
       </div>
@@ -68,6 +71,7 @@
         <span class="sr-only">Loading...</span>
       </div>
     </button>
-   <app-app-upload-file (uploaded)="fileUploaded($event)" [disabled]="apiKey === null || apiKey === '' || isBusy"></app-app-upload-file>
+    <app-app-upload-file (uploaded)="fileUploaded($event)"
+                         [disabled]="apiKey === null || apiKey === '' || isBusy"></app-app-upload-file>
   </div>
 </div>
