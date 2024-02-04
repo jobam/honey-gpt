@@ -33,7 +33,7 @@ export class ChatService {
     return this.openai.chat.completions.create({
         messages: messages,
         model: isFileAttached ? this.visionModel : this.standardModel,
-        max_tokens: isFileAttached ? 4096 : 128000
+        max_tokens: isFileAttached ? 4096 : null,
       },
       {
         headers: {
