@@ -10,7 +10,7 @@ import ChatCompletionMessageParam = Chat.ChatCompletionMessageParam;
 })
 export class ChatService {
   openai!: OpenAI;
-  standardModel: string = 'gpt-4-1106-preview'
+  standardModel: string = 'gpt-4o'
   visionModel: string = 'gpt-4-vision-preview'
 
   messages: ChatCompletionMessageParam[] = [];
